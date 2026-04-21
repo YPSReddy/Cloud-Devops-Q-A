@@ -38,3 +38,24 @@ DevOps Scenario: “In my project, I deployed a frontend app using Kubernetes. I
 This allowed users to access the container via browser securely.”
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3. What are kubernetes services and why we use this?
+A:
+   Definition: "A k8s service is an abstraction that expose a set of pods as a network service, providing a stable IP and DNS name to access them."
+Why do we need a Service?
+   Pods in Kubernetes are dynamic: Pod IPs change when restarted -> Pods can be scaled up/down -> Pods can dies ------>>> So directly accessing Pods is unreliable.
+   Problem: Pod-1 → 10.1.1.5 (dies) -> Pod-2 → 10.1.1.9 (new IP)
+   Solution:
+        Service gives: Stable IP (ClusterIP), DNS name, Load balancing
+  Simple Explanation: “Service acts like a load balancer and stable endpoint in front of pods.”  
+  Flow: Client → Service → Pod (via labels & selectors) -> Service uses labels -> Routes traffic to matching pods.
+
+ClusterIP: Default and use Internal communication (Inside Cluster) Ex: https://nginx-service
+NodePost: Expose app externally Ex: http://NodeIP:30007
+LoadBalancer: Use in Production and works on GCP, AWS, Azure...
+ExternalName: Map service to external DNS.
+
+Real DevOps: “In my project, we deployed a microservices application where the frontend communicates with backend APIs using Kubernetes Services. We used ClusterIP for internal communication and Ingress for external traffic routing. 
+This ensured stable communication even when pods were scaled or restarted.”
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
