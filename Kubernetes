@@ -1,0 +1,40 @@
+1. Differnce between Faemon Set and StatefulSet in Kubernetes?
+A: 
+   DaemonSet - "One Pod Per Node", A DaemonSet ensure that exactly one pod runs on every node or selected node in the cluster.
+               If a Node exists --> A Pod is automaticlly deployed on it. "DaemonSet is used when we need one pod per node for system-level or node-level operations"
+   Characteristics: Runs 1 pod per node, Automatically adds/removes pods when nodes join/leave, Used for background/system services, Pods are stateless
+   Common Use Cases: Logging agents, Monitoring agents, Security tools
+   Real Examples: Fluentd → Collect logs from each node
+                  Prometheus Node Exporter → Collect node metrics
+                  Datadog Agent → Node monitoring
+
+   StatefulSet: A StatefulSet is used to manage stgzateful applications where each pod has: Stable identity, Persisten storage, ordered deployment.
+                “StatefulSet is used when applications need stable identity, persistent storage, and ordered scaling.”
+   Characteristics: Pods have unique names (e.g., db-0, db-1), Each pod gets its own persistent volume, Ordered start/stop, Used for stateful apps
+   Common Use Cases: Databases, Distributed systems, Clustered apps
+   Real Examples: MySQL, MongoDB, Apache Kafka
+
+   When to use DaemonSet? “If I want to run a logging agent like Fluentd on every node to collect logs, I would use a DaemonSet.”
+   When to use StatefulSet? “If I am deploying a database like MySQL where each instance needs its own storage and identity, I would use a StatefulSet.”
+   Simple Real-World Analogy:
+               DaemonSet = Security guard in every building 
+               StatefulSet = Hotel rooms with fixed room numbers 
+
+“DaemonSet ensures one pod runs on every node, mainly for node-level services like logging and monitoring. StatefulSet is used for stateful applications like databases where each pod has a stable identity, persistent storage, and ordered deployment.”
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2. How to connect a specific container from a web browser (network) in k8s? How traffic flows from browser → cluster → pod?
+
+A: "We cannot directly access a container from a browser. We expose it using a Kubernetes Service like NodePort or Loadbalancer. In production, we typically use Ingress with a controller like NGINX to route traffic using domain names and enable SSL.
+  The Service routes external traffic to the correct pod/container using labels and selectors."
+
+  NodePort: Opens a port on every node --> You access using: http://<NodeIP>:<NodePort> ----->>> “NodePort is mainly used for testing, not recommended for production.”
+  LoadBalancer: Cloud provider gives external IP --> Works in: GCP, AWS, Azure ------>>> “Used in production because it provides external IP automatically.”
+  Ingress:  Routes traffic using domain names --> Works at HTTP/HTTPS layer ----->>> “Ingress is preferred in production because it provides routing, SSL, and domain-based access.”
+
+  Traffic Flow: Browser → Ingress → Service → Pod → Container OR Browser → NodeIP:NodePort → Service → Pod → Container
+
+DevOps Scenario: “In my project, I deployed a frontend app using Kubernetes. Initially, I used NodePort for testing. Later, in production, I exposed the application using Ingress with an NGINX Ingress Controller and configured a domain like myapp.com with SSL. 
+This allowed users to access the container via browser securely.”
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
